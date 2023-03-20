@@ -21,10 +21,17 @@ public class Startup
     {
         services
             .AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-        services.AddControllersWithViews();
+        
+
         services.AddTransient<ICategoriaRepository,CategoriaRepository>();
         services.AddTransient<ILancheRepository, LancheRepository>();
         
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+        services.AddControllersWithViews();
+
+        services.AddMemoryCache();
+        services.AddSession();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,6 +53,8 @@ public class Startup
         app.UseRouting();
 
         app.UseAuthorization();
+
+        app.UseSession();
 
         app.UseEndpoints(endpoints =>
         {
